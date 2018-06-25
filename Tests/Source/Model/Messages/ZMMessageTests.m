@@ -925,6 +925,8 @@ NSString * const ReactionsKey = @"reactions";
     [self checkThatUpdateEventType:ZMUpdateEventTypeConversationMemberLeave generatesSystemMessageType:ZMSystemMessageTypeParticipantsRemoved failureRecorder:NewFailureRecorder()];
 
     [self checkThatUpdateEventType:ZMUpdateEventTypeConversationRename generatesSystemMessageType:ZMSystemMessageTypeConversationNameChanged failureRecorder:NewFailureRecorder()];
+    
+    [self checkThatUpdateEventType:ZMUpdateEventTypeConversationMessageTimerUpdate generatesSystemMessageType:ZMSystemMessageTypeMessageTimerUpdate failureRecorder:NewFailureRecorder()];
 }
 
 - (void)testThatItDoesNotGenerateSystemMessagesFromUpdateEventsOfTheWrongType

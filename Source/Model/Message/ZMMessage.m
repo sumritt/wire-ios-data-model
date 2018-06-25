@@ -858,11 +858,12 @@ NSString * const ZMSystemMessageMessageTimerKey = @"messageTimer";
         return nil;
     }
     
-    NSString *messageText = [[[updateEvent.payload dictionaryForKey:@"data"] optionalStringForKey:@"message"] stringByRemovingExtremeCombiningCharacters];
-    NSString *name = [[[updateEvent.payload dictionaryForKey:@"data"] optionalStringForKey:@"name"] stringByRemovingExtremeCombiningCharacters];
+    NSDictionary *dataPayload = [updateEvent.payload dictionaryForKey:@"data"];
+    NSString *messageText = [[dataPayload optionalStringForKey:@"message"] stringByRemovingExtremeCombiningCharacters];
+    NSString *name = [[dataPayload optionalStringForKey:@"name"] stringByRemovingExtremeCombiningCharacters];
     
     NSMutableSet *usersSet = [NSMutableSet set];
-    for(NSString *userId in [[updateEvent.payload dictionaryForKey:@"data"] optionalArrayForKey:@"user_ids"]) {
+    for(NSString *userId in [dataPayload optionalArrayForKey:@"user_ids"]) {
         ZMUser *user = [ZMUser userWithRemoteID:[NSUUID uuidWithTransportString:userId] createIfNeeded:YES inContext:moc];
         [usersSet addObject:user];
     }
@@ -877,9 +878,13 @@ NSString * const ZMSystemMessageMessageTimerKey = @"messageTimer";
         [usersSet removeObject:message.sender];
     }
     
+    if (nil != dataPayload[@"message_timer"]) {
+        message.messageTimer = [dataPayload optionalNumberForKey:@"message_timer"] ?: @0;
+    }
+    
     message.users = usersSet;
     message.text = messageText != nil ? messageText : name;
-    
+
     if (type == ZMSystemMessageTypeParticipantsAdded || type == ZMSystemMessageTypeParticipantsRemoved) {
         [conversation insertOrUpdateSecurityVerificationMessageAfterParticipantsChange:message];
     }
@@ -980,6 +985,7 @@ NSString * const ZMSystemMessageMessageTimerKey = @"messageTimer";
 + (NSDictionary *)eventTypeToSystemMessageTypeMap   
 {
     return @{
+             @(ZMUpdateEventTypeConversationMessageTimerUpdate) : @(ZMSystemMessageTypeMessageTimerUpdate),
              @(ZMUpdateEventTypeConversationMemberJoin) : @(ZMSystemMessageTypeParticipantsAdded),
              @(ZMUpdateEventTypeConversationMemberLeave) : @(ZMSystemMessageTypeParticipantsRemoved),
              @(ZMUpdateEventTypeConversationRename) : @(ZMSystemMessageTypeConversationNameChanged)
