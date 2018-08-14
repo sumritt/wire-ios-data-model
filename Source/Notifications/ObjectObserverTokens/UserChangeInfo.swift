@@ -42,7 +42,9 @@ extension ZMUser : ObjectInSnapshot {
             #keyPath(ZMUser.clients),
             #keyPath(ZMUser.handle),
             #keyPath(ZMUser.team),
-            #keyPath(ZMUser.availability)
+            #keyPath(ZMUser.availability),
+            #keyPath(ZMUser.providerIdentifier),
+            #keyPath(ZMUser.serviceIdentifier)
         ]
     }
 
@@ -129,6 +131,11 @@ extension ZMUser : ObjectInSnapshot {
     
     public var availabilityChanged : Bool {
         return changedKeys.contains(#keyPath(ZMUser.availability))
+    }
+    
+    public var isServiceUserChanged: Bool {
+        return changedKeys.contains(#keyPath(ZMUser.providerIdentifier))
+            && changedKeys.contains(#keyPath(ZMUser.serviceIdentifier))
     }
 
     open let user: UserType

@@ -37,6 +37,7 @@ class UserObserverTests : NotificationDispatcherTestBase {
         case Handle = "handleChanged"
         case Teams = "teamsChanged"
         case Availability = "availabilityChanged"
+        case ServiceUser = "isServiceUserChanged"
     }
     
     let userInfoChangeKeys: [UserInfoChangeKey] = [
@@ -49,7 +50,8 @@ class UserObserverTests : NotificationDispatcherTestBase {
         .TrustLevel,
         .Teams,
         .Handle,
-        .Availability
+        .Availability,
+        .ServiceUser
     ]
     
     var userObserver : UserObserver!
@@ -519,6 +521,19 @@ extension UserObserverTests {
         self.checkThatItNotifiesTheObserverOfAChange(user,
                                                      modifier : { $0.updateAvailability(.away) },
                                                      expectedChangedField: .Availability)
+    }
+    
+    func testThatItNotifiesAboutChangeInServiceIdentifier() {
+        // given
+        let user = ZMUser.insertNewObject(in: uiMOC)
+        uiMOC.saveOrRollback()
+        
+        // when
+        checkThatItNotifiesTheObserverOfAChange(
+            user,
+            modifier : { $0.serviceIdentifier = "service"; $0.providerIdentifier = "provider" },
+            expectedChangedField: .ServiceUser
+        )
     }
 }
 
