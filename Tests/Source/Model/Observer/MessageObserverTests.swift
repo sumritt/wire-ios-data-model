@@ -77,7 +77,6 @@ class MessageObserverTests : NotificationDispatcherTestBase {
                 #keyPath(MessageChangeInfo.imageChanged),
                 #keyPath(MessageChangeInfo.deliveryStateChanged),
                 #keyPath(MessageChangeInfo.senderChanged),
-                #keyPath(MessageChangeInfo.linkPreviewChanged),
                 #keyPath(MessageChangeInfo.isObfuscatedChanged),
                 #keyPath(MessageChangeInfo.childMessagesChanged),
                 #keyPath(MessageChangeInfo.reactionsChanged),
@@ -134,12 +133,12 @@ class MessageObserverTests : NotificationDispatcherTestBase {
         )
     }
 
-    func testThatItNotifiesObserverWhenTheLinkPreviewStateChanges() {
+    func testThatItNotifiesObserverWhenTheGenericMessageChanges() {
         // when
         checkThatItNotifiesTheObserverOfAChange(
             ZMClientMessage(nonce: UUID.create(), managedObjectContext: uiMOC),
             modifier: { $0.linkPreviewState = .downloaded },
-            expectedChangedField: #keyPath(MessageChangeInfo.linkPreviewChanged)
+            expectedChangedField: #keyPath(MessageChangeInfo.genericMessageChanged)
         )
     }
 
@@ -163,7 +162,7 @@ class MessageObserverTests : NotificationDispatcherTestBase {
         checkThatItNotifiesTheObserverOfAChange(
             clientMessage,
             modifier: { $0.add(updateGenericMessage.data()) },
-            expectedChangedFields: [#keyPath(MessageChangeInfo.linkPreviewChanged), #keyPath(MessageChangeInfo.genericMessageChanged)]
+            expectedChangedField: #keyPath(MessageChangeInfo.genericMessageChanged)
         )
     }
     
@@ -318,7 +317,7 @@ class MessageObserverTests : NotificationDispatcherTestBase {
         self.checkThatItNotifiesTheObserverOfAChange(
             clientMessage,
             modifier: { $0.add(update.data()) },
-            expectedChangedFields: [ #keyPath(MessageChangeInfo.genericMessageChanged), #keyPath(MessageChangeInfo.linkPreviewChanged)]
+            expectedChangedField: #keyPath(MessageChangeInfo.genericMessageChanged)
         )
 
     }

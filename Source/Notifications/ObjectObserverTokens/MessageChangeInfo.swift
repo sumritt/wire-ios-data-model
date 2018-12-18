@@ -122,7 +122,6 @@ extension ZMSystemMessage {
                 "imageChanged: \(imageChanged)",
                 "fileAvailabilityChanged: \(fileAvailabilityChanged)",
                 "usersChanged: \(usersChanged)",
-                "linkPreviewChanged: \(linkPreviewChanged)",
                 "transferStateChanged: \(transferStateChanged)",
                 "senderChanged: \(senderChanged)",
                 "isObfuscatedChanged: \(isObfuscatedChanged)",
@@ -144,7 +143,7 @@ extension ZMSystemMessage {
     }
 
     public var genericMessageChanged : Bool {
-        return changedKeysContain(keys: #keyPath(ZMClientMessage.genericMessage))
+        return changedKeysContain(keys: #keyPath(ZMClientMessage.genericMessage), #keyPath(ZMClientMessage.linkPreviewState))
     }
     
     public var childMessagesChanged : Bool {
@@ -171,10 +170,6 @@ extension ZMSystemMessage {
 
     public var usersChanged : Bool {
         return userChangeInfo != nil
-    }
-    
-    public var linkPreviewChanged: Bool {
-        return changedKeysContain(keys: #keyPath(ZMClientMessage.linkPreviewState), MessageKey.linkPreview.rawValue)
     }
 
     public var transferStateChanged: Bool {
