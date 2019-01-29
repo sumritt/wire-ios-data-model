@@ -109,7 +109,7 @@ import Foundation
         return originalSize
     }
     
-    /// Currend download / upload progress
+    /// Current download / upload progress
     @NSManaged public var progress: Float
     
     /// File transfer state
