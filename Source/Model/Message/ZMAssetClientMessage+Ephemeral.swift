@@ -56,7 +56,8 @@ extension ZMAssetClientMessage {
         }
     }
     
-    @discardableResult @objc public override func startDestructionIfNeeded() -> Bool {
+    @discardableResult @objc
+    public override func startDestructionIfNeeded() -> Bool {
         
         let isSelfUser = self.sender?.isSelfUser ?? false
         
@@ -70,16 +71,32 @@ extension ZMAssetClientMessage {
                 }
             }
         }
-        
+
+        print("senderClientID = \(String(describing: senderClientID))")
+        print("remoteIdentifier = \(ZMUser.selfUser(in: managedObjectContext!).selfClient()?.remoteIdentifier)")
+        print("uploadState = \(String(describing: uploadState.description))")
+        print("deletionTimeout = \(String(describing: deletionTimeout))")
+
+        if uploadState != .uploadingFullAsset {
+            ///TODO: need to extend the date
+
+            if isEphemeral {
+                destructionDate = Date(timeIntervalSinceNow: deletionTimeout)
+                print("destructionDate = \(String(describing: destructionDate))")
+            }
+            return false
+        }
+
         // This method is called after receiving the response but before updating the
         // uploadState, which means a state of fullAsset corresponds to the asset upload being done.
         if isSelfUser,
-            let moc = self.managedObjectContext,
+            let moc = managedObjectContext,
             let selfClient = ZMUser.selfUser(in: moc).selfClient(),
-            self.senderClientID == selfClient.remoteIdentifier,
-            self.uploadState != .uploadingFullAsset {
+            senderClientID == selfClient.remoteIdentifier, ///TODO: senderClientID = nil, why?
+            uploadState != .uploadingFullAsset {
             return false
         }
+
         return super.startDestructionIfNeeded()
     }
     
