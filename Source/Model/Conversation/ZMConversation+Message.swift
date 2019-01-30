@@ -106,7 +106,8 @@ extension ZMConversation {
         guard let message = ZMAssetClientMessage(with: fileMetadata,
                                                  nonce: nonce,
                                                  managedObjectContext: managedObjectContext,
-                                                 expiresAfter: messageDestructionTimeoutValue) else { return  nil}
+                                                 expiresAfter: messageDestructionTimeoutValue ///TODO:
+            ) else { return  nil}
         
         message.sender = ZMUser.selfUser(in: managedObjectContext)
         

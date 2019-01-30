@@ -281,9 +281,14 @@ import Foundation
                 self.expectsReadConfirmation = self.conversation?.hasReadReceiptsEnabled ?? false
             }
             conversation?.updateTimestampsAfterUpdatingMessage(self)
+
+//            if let progress = (payload as NSDictionary).number(forKey: "progress") {
+//                print("progress = \(progress)")
+//                //self.extendDestructionTimer(to: Date(timeIntervalSinceNow: 15)) ///TODO: calc the correct value
+//            }
         }
         
-        _ = self.startDestructionIfNeeded()
+        startDestructionIfNeeded()
     }
     
     // Private implementation
@@ -353,6 +358,23 @@ extension ZMAssetClientMessage {
     case uploadingThumbnail = 2
     case uploadingFullAsset = 3
     case uploadingFailed = 4
+
+    public var description : String {
+        get {
+            switch self {
+            case .done:
+                return "done"
+            case .uploadingPlaceholder:
+                return "uploadingPlaceholder"
+            case .uploadingThumbnail:
+                return "uploadingThumbnail"
+            case .uploadingFullAsset:
+                return "uploadingFullAsset"
+            case .uploadingFailed:
+                return "uploadingFailed"
+            }
+        }
+    }
 }
 
 

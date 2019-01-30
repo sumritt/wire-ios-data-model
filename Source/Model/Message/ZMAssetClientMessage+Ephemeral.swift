@@ -33,7 +33,7 @@ extension ZMAssetClientMessage {
     }
     
     @objc override public var deletionTimeout: TimeInterval {
-        if let ephemeral = self.ephemeral {
+        if let ephemeral = ephemeral {
             return TimeInterval(ephemeral.expireAfterMillis / 1000)
         }
         return -1
@@ -72,20 +72,36 @@ extension ZMAssetClientMessage {
             }
         }
 
-        print("senderClientID = \(String(describing: senderClientID))")
-        print("remoteIdentifier = \(ZMUser.selfUser(in: managedObjectContext!).selfClient()?.remoteIdentifier)")
+//        print("senderClientID = \(String(describing: senderClientID))")
+//        print("remoteIdentifier = \(ZMUser.selfUser(in: managedObjectContext!).selfClient()?.remoteIdentifier)")
         print("uploadState = \(String(describing: uploadState.description))")
-        print("deletionTimeout = \(String(describing: deletionTimeout))")
+//        print("deletionTimeout = \(String(describing: deletionTimeout))")
+        print("deliveryState == \(String(describing: deliveryState.rawValue))")
 
-        if uploadState != .uploadingFullAsset {
-            ///TODO: need to extend the date
-
-            if isEphemeral {
+        if deliveryState == .pending,
+           isEphemeral {
                 destructionDate = Date(timeIntervalSinceNow: deletionTimeout)
                 print("destructionDate = \(String(describing: destructionDate))")
-            }
-            return false
+                return false
         }
+
+        /*switch uploadState {
+
+//        case done = 0
+//        case uploadingPlaceholder = 1
+//        case uploadingThumbnail = 2
+//        case uploadingFullAsset = 3
+//        case uploadingFailed = 4
+
+            case .uploadingPlaceholder:
+                if isEphemeral {
+                    destructionDate = Date(timeIntervalSinceNow: deletionTimeout)
+                    print("destructionDate = \(String(describing: destructionDate))")
+                    return false
+                }
+            default:
+                break
+        }*/
 
         // This method is called after receiving the response but before updating the
         // uploadState, which means a state of fullAsset corresponds to the asset upload being done.

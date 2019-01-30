@@ -22,11 +22,13 @@ extension ZMMessage {
 
     /// Sets the destruction date to the current date plus the timeout
     /// After this date the message "self-destructs", e.g. gets deleted from all sender & receiver devices or obfuscated if the sender is the selfUser
-    @objc func startDestructionIfNeeded() -> Bool {
+    @discardableResult @objc
+    func startDestructionIfNeeded() -> Bool {
 
         if destructionDate != nil || !isEphemeral {
             return false
         }
+        
         let isSelfUser: Bool
         if let sender = sender {
             isSelfUser = sender.isSelfUser
@@ -39,16 +41,6 @@ extension ZMMessage {
 
             if let timer: ZMMessageDestructionTimer = managedObjectContext?.zm_messageObfuscationTimer {
                 timer.startObfuscationTimer(message: self, timeout: deletionTimeout)
-
-                ///Do not start time if deliveryState is not ready
-                switch deliveryState {
-                case .pending,
-                     .invalid,
-                     .failedToSend:
-                    return false
-                default:
-                    return true
-                }
             } else {
                 return false
             }
