@@ -72,12 +72,6 @@ extension ZMAssetClientMessage {
             }
         }
 
-//        print("senderClientID = \(String(describing: senderClientID))")
-//        print("remoteIdentifier = \(ZMUser.selfUser(in: managedObjectContext!).selfClient()?.remoteIdentifier)")
-        print("uploadState = \(String(describing: uploadState.description))")
-//        print("deletionTimeout = \(String(describing: deletionTimeout))")
-        print("deliveryState == \(String(describing: deliveryState.rawValue))")
-
         if deliveryState == .pending,
            isEphemeral {
                 destructionDate = Date(timeIntervalSinceNow: deletionTimeout)
@@ -85,30 +79,12 @@ extension ZMAssetClientMessage {
                 return false
         }
 
-        /*switch uploadState {
-
-//        case done = 0
-//        case uploadingPlaceholder = 1
-//        case uploadingThumbnail = 2
-//        case uploadingFullAsset = 3
-//        case uploadingFailed = 4
-
-            case .uploadingPlaceholder:
-                if isEphemeral {
-                    destructionDate = Date(timeIntervalSinceNow: deletionTimeout)
-                    print("destructionDate = \(String(describing: destructionDate))")
-                    return false
-                }
-            default:
-                break
-        }*/
-
         // This method is called after receiving the response but before updating the
         // uploadState, which means a state of fullAsset corresponds to the asset upload being done.
         if isSelfUser,
             let moc = managedObjectContext,
             let selfClient = ZMUser.selfUser(in: moc).selfClient(),
-            senderClientID == selfClient.remoteIdentifier, ///TODO: senderClientID = nil, why?
+            senderClientID == selfClient.remoteIdentifier,
             uploadState != .uploadingFullAsset {
             return false
         }

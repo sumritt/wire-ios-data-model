@@ -281,11 +281,6 @@ import Foundation
                 self.expectsReadConfirmation = self.conversation?.hasReadReceiptsEnabled ?? false
             }
             conversation?.updateTimestampsAfterUpdatingMessage(self)
-
-//            if let progress = (payload as NSDictionary).number(forKey: "progress") {
-//                print("progress = \(progress)")
-//                //self.extendDestructionTimer(to: Date(timeIntervalSinceNow: 15)) ///TODO: calc the correct value
-//            }
         }
         
         startDestructionIfNeeded()
